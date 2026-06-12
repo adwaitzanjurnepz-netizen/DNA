@@ -69,11 +69,50 @@ def download_file(url: str, dest_path: str):
                 f.write(chunk)
                 bar.update(len(chunk))
 
+_fasta_ref = None
+
 def fetch_flanking_sequence(chrom: str, pos: int, ref: str, flank: int = 50, genome: str = "hg38") -> Optional[str]:
     """
-    Fetches the reference flanking sequence from UCSC Genome Browser API.
-    Handles coordinate conversion: VCF is 1-based, UCSC REST API is 0-based, half-open.
+    Fetches the reference flanking sequence. Uses a local hg38.fasta if available (for speed),
+    otherwise falls back to UCSC Genome Browser API.
     """
+    fasta_path = "./cache/hg38.fasta"
+    if os.path.exists(fasta_path):
+        global _fasta_ref
+        try:
+            from pyfaidx import Fasta
+            if _fasta_ref is None:
+                print(f"Loading local reference genome index from {fasta_path}...")
+                _fasta_ref = Fasta(fasta_path)
+            
+            # Normalize chrom name
+            chrom_clean = chrom
+            if not chrom_clean.startswith("chr"):
+                chrom_clean = f"chr{chrom}"
+            
+            # ClinVar chrom MT is named M in Broad assembly38 FASTA
+            if chrom_clean.lower() in ["chrmt", "chrm"]:
+                chrom_clean = "chrM"
+                
+            if chrom_clean not in _fasta_ref:
+                # Try case matching
+                for key in _fasta_ref.keys():
+                    if key.lower() == chrom_clean.lower():
+                        chrom_clean = key
+                        break
+            
+            if chrom_clean in _fasta_ref:
+                # 0-based indexing for start position
+                start = max(0, pos - 1 - flank)
+                end = pos - 1 + len(ref) + flank
+                seq = _fasta_ref[chrom_clean][start:end].seq
+                return seq.upper()
+            else:
+                print(f"Warning: Chromosome {chrom_clean} not found in local hg38.fasta. Falling back to UCSC API.", file=sys.stderr)
+        except Exception as e:
+            print(f"Warning: Failed to fetch sequence locally ({e}). Falling back to UCSC API.", file=sys.stderr)
+
+    # --- FALLBACK: UCSC API ---
     # Normalize chromosome name for UCSC (must start with 'chr')
     chrom_clean = chrom.lower()
     if not chrom_clean.startswith("chr"):

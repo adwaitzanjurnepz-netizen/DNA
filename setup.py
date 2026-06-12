@@ -16,6 +16,7 @@ setup(
         "google-cloud-storage>=2.10.0",
         "biopython>=1.81",
         "einops>=0.6.1",
-        "tqdm>=4.65.0"
+        "tqdm>=4.65.0",
+        "pyfaidx>=0.7.0"
     ]
 )
