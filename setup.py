@@ -4,6 +4,7 @@ setup(
     name="dna_classifier",
     version="0.1",
     packages=find_packages(),
+    py_modules=["entrypoint", "train", "preprocess", "dataset", "evaluation_metrics"],
     install_requires=[
         "torch>=2.0.0",
         "transformers>=4.30.0",
