@@ -6,12 +6,20 @@
 #
 # PROVISIONING COMMANDS (Execute locally on your laptop to create the GCP VM):
 #
+# NOTE: The generic 'pytorch-latest-gpu' family has been deprecated by GCP.
+# You can query available PyTorch GPU image families using this command:
+#   gcloud compute images list --project="deeplearning-platform-release" --no-standard-images --format="value(FAMILY)" | sort -u | grep pytorch
+#
+# Common available families include:
+#   - pytorch-2-2-cu121-ubuntu-2204
+#   - pytorch-2-9-cu129-ubuntu-2204-nvidia-580
+#
 # 1. Option A: NVIDIA L4 GPU (Highly Cost-Effective, ~ $0.90 - $1.00 / hour)
 #    gcloud compute instances create dna-fine-tune-l4 \
 #        --project="YOUR_PROJECT_ID" \
 #        --zone="us-central1-a" \
 #        --machine-type="g2-standard-8" \
-#        --image-family="pytorch-latest-gpu" \
+#        --image-family="pytorch-2-2-cu121-ubuntu-2204" \
 #        --image-project="deeplearning-platform-release" \
 #        --accelerator="count=1,type=nvidia-l4" \
 #        --maintenance-policy="TERMINATE" \
@@ -26,7 +34,7 @@
 #        --project="YOUR_PROJECT_ID" \
 #        --zone="us-central1-a" \
 #        --machine-type="a2-highgpu-1g" \
-#        --image-family="pytorch-latest-gpu" \
+#        --image-family="pytorch-2-2-cu121-ubuntu-2204" \
 #        --image-project="deeplearning-platform-release" \
 #        --accelerator="count=1,type=nvidia-tesla-a100" \
 #        --maintenance-policy="TERMINATE" \
