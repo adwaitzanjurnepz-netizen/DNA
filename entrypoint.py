@@ -6,7 +6,7 @@ import argparse
 def main():
     print("=== Running Preprocessing ===")
     preprocess_cmd = [
-        sys.executable, "preprocess.py",
+        sys.executable, "-m", "preprocess",
         "--limit", "1000",
         "--flank", "50",
         "--output_file", "./processed_variants.csv"
@@ -15,7 +15,7 @@ def main():
 
     print("=== Running Fine-tuning ===")
     train_cmd = [
-        sys.executable, "train.py",
+        sys.executable, "-m", "train",
         "--model_name", "zhihan1996/DNABERT-2-117M",
         "--data_path", "./processed_variants.csv",
         "--use_mock", "False",
