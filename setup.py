@@ -7,7 +7,7 @@ setup(
     py_modules=["entrypoint", "train", "preprocess", "dataset", "evaluation_metrics"],
     install_requires=[
         "torch>=2.0.0",
-        "transformers>=4.30.0",
+        "transformers>=4.30.0,<5.0.0",
         "accelerate>=0.20.0",
         "scikit-learn>=1.2.0",
         "pandas>=2.0.0",
