@@ -11,7 +11,7 @@
 #        --project="YOUR_PROJECT_ID" \
 #        --zone="us-central1-a" \
 #        --machine-type="g2-standard-8" \
-#        --image-family="pytorch-2-3-cu121-ubuntu-2204-lts" \
+#        --image-family="pytorch-latest-gpu" \
 #        --image-project="deeplearning-platform-release" \
 #        --accelerator="count=1,type=nvidia-l4" \
 #        --maintenance-policy="TERMINATE" \
@@ -26,7 +26,7 @@
 #        --project="YOUR_PROJECT_ID" \
 #        --zone="us-central1-a" \
 #        --machine-type="a2-highgpu-1g" \
-#        --image-family="pytorch-2-3-cu121-ubuntu-2204-lts" \
+#        --image-family="pytorch-latest-gpu" \
 #        --image-project="deeplearning-platform-release" \
 #        --accelerator="count=1,type=nvidia-tesla-a100" \
 #        --maintenance-policy="TERMINATE" \
