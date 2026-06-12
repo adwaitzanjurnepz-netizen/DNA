@@ -221,6 +221,18 @@ def main():
             
     # 4. Configure Training Arguments
     # Optimized for memory and compute efficiency on A100/L4 GPUs
+    # Handle API deprecation/removal in newer transformers versions
+    import transformers
+    tf_version = transformers.__version__.split(".")
+    major = int(tf_version[0])
+    minor = int(tf_version[1])
+    
+    strategy_args = {}
+    if major > 4 or (major == 4 and minor >= 41):
+        strategy_args["eval_strategy"] = "epoch"
+    else:
+        strategy_args["evaluation_strategy"] = "epoch"
+
     training_args = TrainingArguments(
         output_dir=args.output_dir,
         num_train_epochs=args.epochs,
@@ -229,7 +241,6 @@ def main():
         gradient_accumulation_steps=args.accum_steps,
         learning_rate=args.lr,
         weight_decay=0.01,
-        evaluation_strategy="epoch",
         save_strategy="epoch",
         logging_strategy="steps",
         logging_steps=10,
@@ -240,7 +251,8 @@ def main():
         fp16=fp16_enabled,
         report_to="none", # Disables 3rd party cloud telemetry for clean execution
         dataloader_num_workers=2 if torch.cuda.is_available() else 0,
-        save_total_limit=2
+        save_total_limit=2,
+        **strategy_args
     )
     
     # 5. Initialize Trainer
